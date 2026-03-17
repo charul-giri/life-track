@@ -52,15 +52,18 @@ git clone https://github.com/your-username/life-track.git
 cd life-track
 
 2. Setup environment
+
 python -m venv venv
 venv\Scripts\activate   # (Windows)
 
 
-3. Install dependencies
+4. Install dependencies
+
 pip install -r requirements.txt
 
 
-4. Run the app
+5. Run the app
+
 python app.py
 
 
