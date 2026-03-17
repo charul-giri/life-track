@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whisper Live Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ----------------------- BASE ----------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top left, #0e0e10, #1a1a1f);
+  color: #e9e9ec;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Floating gradient glow */
+body::before, body::after {
+  content: "";
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+}
+body::before {
+  top: -100px;
+  left: -150px;
+  background: rgba(0, 255, 204, 0.2);
+}
+body::after {
+  bottom: -100px;
+  right: -150px;
+  background: rgba(255, 0, 200, 0.15);
+}
+
+h1 {
+  font-size: 2.6rem;
+  margin: 40px 0 20px;
+  background: linear-gradient(90deg, #00ffd0, #ff66cc);
+  -webkit-background-clip: text;
+  color: transparent;
+  z-index: 1;
+  letter-spacing: 1px;
+}
+
+/* ----------------------- CARD CONTAINER ----------------------- */
+.dashboard {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  box-shadow: 0 0 60px rgba(0, 255, 204, 0.07);
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 1100px;
+  z-index: 1;
+  transition: 0.4s ease;
+}
+
+.dashboard:hover {
+  box-shadow: 0 0 80px rgba(0, 255, 204, 0.15);
+}
+
+/* ----------------------- BUTTONS ----------------------- */
+.controls {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+button {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+/* Style for disabled buttons */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#startBtn {
+  background: linear-gradient(90deg, #00ffd0, #00bfff);
+  color: #000;
+}
+#pauseBtn {
+  background: linear-gradient(90deg, #ff6b6b, #fddb92);
+  color: #000;
+}
+#scheduleBtn {
+  background: linear-gradient(90deg, #9b5de5, #f15bb5);
+  color: #fff;
+}
+button:hover:not(:disabled) {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* ----------------------- STATUS ----------------------- */
+.status {
+  text-align: center;
+  color: #00ffd0;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  min-height: 1.2rem; /* Reserve space */
+}
+
+/* ----------------------- PANELS ----------------------- */
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.8rem;
+  transition: 0.3s;
+}
+
+.panel:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 204, 0.1);
+}
+
+.panel h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #00ffd0, #ff66cc);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: left;
+}
+
+/* --- NEW STYLE FOR CHECKBOX COLUMN --- */
+th:first-child, td:first-child {
+    width: 10%;
+    text-align: center;
+}
+/* --- NEW STYLE FOR TIME COLUMN --- */
+th:last-child, td:last-child {
+    width: 25%;
+}
+
+
+td input[type="time"] {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  padding: 4px 8px;
+  width: 100px;
+}
+
+/* ----------------------- CHAT BAR ----------------------- */
+.chat-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  width: 80%;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  z-index: 2;
+}
+
+.chat-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+}
+
+.chat-bar button {
+  background: linear-gradient(90deg, #00ffd0, #00bfff);
+  color: #000;
+  border-radius: 30px;
+  padding: 10px 25px;
+  font-weight: 600;
+}
+
+/* ----------------------- SCHEDULE PAGE ----------------------- */
+#schedulePage {
+  display: none;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 25px;
+  backdrop-filter: blur(20px);
+  padding: 2rem;
+  margin-top: 2rem;
+  width: 90%;
+  max-width: 1000px;
+}
+
+#schedulePage h2 {
+  background: linear-gradient(90deg, #00ffd0, #ff66cc);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.removeBtn {
+  background: linear-gradient(90deg, #ff6b6b, #fddb92);
+  color: #000;
+  border-radius: 30px;
+  border: none;
+  padding: 12px 30px;
+  margin-top: 20px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+canvas {
+  margin: 20px auto;
+  display: block;
+  max-width: 400px;
+}
+
+@media (max-width: 800px) {
+  .panels {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1>Whisper AI Dashboard</h1>
+
+<div class="dashboard" id="mainDashboard">
+  <div class="controls">
+    <button id="startBtn">🎙 Start</button>
+    <button id="pauseBtn" disabled>Processing...</button>
+  </div>
+
+  <div class="status" id="status">Status: Idle</div>
+
+  <div class="panels">
+    <div class="panel">
+      <h2>🧠 Summary</h2>
+      <p id="summary">Waiting for voice input...</p>
+    </div>
+
+    <div class="panel">
+      <h2>🗒 To-Do List</h2>
+      <table id="todoTable">
+        <thead><tr><th>Status</th><th>Task</th><th>Time</th></tr></thead>
+        <tbody><tr><td>-</td><td>No tasks yet.</td><td>--</td></tr></tbody>
+      </table>
+      <button id="scheduleBtn" style="margin-top:15px;">📅 Schedule</button>
+      <button id="clearBtn" style="margin-top:15px; background: linear-gradient(90deg, #ff6b6b, #fddb92); color: #000;">Clear List</button>
+    </div>
+  </div>
+</div>
+
+<div id="schedulePage">
+  <h2>📊 Today's Scheduled Tasks</h2>
+  <canvas id="taskChart"></canvas>
+  <table id="scheduleTable">
+    <thead><tr><th>Task</th><th>Time</th><th>Status</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div style="text-align:center;">
+    <button class="removeBtn" id="removeBtn">🗑 Remove Time Table</button>
+  </div>
+</div>
+
+<div class="chat-bar">
+  <input type="text" id="chatInput" placeholder="Type a task and press Send...">
+  <button id="chatSend">Send</button>
+</div>
+
+
+<script>
+// --- GLOBAL STATE ---
+let tasks = []; // This will hold the tasks from the server
+let mediaRecorder;
+let audioChunks = [];
+let taskChartInstance = null; // To hold the chart object
+
+// --- UI ELEMENT REFERENCES ---
+const startBtn = document.getElementById("startBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const statusEl = document.getElementById("status");
+const summaryEl = document.getElementById("summary");
+const todoBody = document.querySelector("#todoTable tbody");
+const scheduleBody = document.querySelector("#scheduleTable tbody");
+const mainDashboard = document.getElementById("mainDashboard");
+const schedulePage = document.getElementById("schedulePage");
+const clearBtn = document.getElementById("clearBtn");
+// --- NEW CHAT BAR REFERENCES ---
+const chatInput = document.getElementById("chatInput");
+const chatSendBtn = document.getElementById("chatSend");
+
+// --- AUDIO RECORDING LOGIC ---
+
+// On page load, set up buttons
+document.addEventListener("DOMContentLoaded", () => {
+    pauseBtn.disabled = true;
+    pauseBtn.innerText = "⏸ Stop";
+    startBtn.disabled = false;
+});
+
+// Start Button Click
+startBtn.onclick = async () => {
+  statusEl.textContent = ""; // Clear errors
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = onStopHandler;
+    mediaRecorder.start();
+    
+    statusEl.innerText = "🎤 Recording...";
+    summaryEl.innerText = "Listening... Please speak.";
+    startBtn.disabled = true;
+    pauseBtn.disabled = false;
+
+  } catch (err) {
+    statusEl.innerText = "Microphone error: " + err.message;
+  }
+};
+
+// Pause/Stop Button Click
+pauseBtn.onclick = () => {
+  mediaRecorder.stop();
+  statusEl.innerText = "⏳ Processing...";
+  startBtn.disabled = true;
+  pauseBtn.disabled = true;
+};
+
+// Handler when recording stops
+async function onStopHandler() {
+  const blob = new Blob(audioChunks, { type: "audio/webm" });
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+    try {
+      const base64 = reader.result;
+      const res = await fetch("/upload_audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ audio: base64 })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        statusEl.innerText = "✅ Success! Tasks extracted.";
+        summaryEl.innerText = data.text || "(No transcription received)";
+
+        // --- UPDATED TO-DO LIST LOGIC ---
+        
+        // Append new tasks to the existing global list
+        const newTasks = data.tasks || [];
+        if (newTasks.length > 0) {
+            tasks = tasks.concat(newTasks); // Add new tasks to the list
+            renderTodoList(); // Re-draw the list
+        } else if (tasks.length === 0) {
+            // Only show if no new tasks AND no old tasks
+            todoBody.innerHTML = `<tr><td>-</td><td>No tasks extracted.</td><td>--</td></tr>`;
+        }
+        
+      } else {
+        // Handle server errors
+        if (data && data.error === "ffmpeg_not_found") {
+          statusEl.innerHTML = "ffmpeg not found on server. Please install ffmpeg.";
+        } else {
+          statusEl.textContent = "Error: " + (data && data.message ? data.message : "Unknown server error");
+        }
+        summaryEl.innerText = "Error processing audio.";
+        todoBody.innerHTML = `<tr><td>-</td><td>Error.</td><td>--</td></tr>`;
+      }
+    } catch (e) {
+      statusEl.textContent = "Network error: " + e.message;
+    }
+
+    // Re-enable buttons
+    startBtn.disabled = false;
+    pauseBtn.disabled = true;
+  };
+  reader.readAsDataURL(blob);
+}
+
+// --- NEW FUNCTION TO MANUALLY ADD A TASK ---
+function addManualTask(taskText) {
+    if (!taskText || taskText.trim().length === 0) {
+        return; // Do nothing if input is empty
+    }
+    tasks.push(taskText.trim()); // Add the new task to the global list
+    renderTodoList(); // Re-draw the list
+}
+
+// --- NEW FUNCTION TO DRAW THE TO-DO LIST ---
+// We call this from two places (onStopHandler and addManualTask)
+// so it's good to make it a separate function.
+function renderTodoList() {
+    todoBody.innerHTML = ""; // Clear table
+    
+    if (tasks.length === 0) {
+        todoBody.innerHTML = `<tr><td>-</td><td>No tasks yet.</td><td>--</td></tr>`;
+        return;
+    }
+    
+    tasks.forEach(t => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td style="text-align: center;"><input type="checkbox"></td>
+            <td>${t}</td>
+            <td><input type="time"></td>
+        `;
+        todoBody.appendChild(row);
+    });
+}
+
+// --- "CLEAR LIST" BUTTON LOGIC ---
+clearBtn.onclick = () => {
+    tasks = []; // Clear the global tasks array
+    renderTodoList(); // Re-draw the (now empty) list
+    
+    // Optional: Also reset the schedule page if it's been rendered
+    if (taskChartInstance) {
+        taskChartInstance.destroy();
+        taskChartInstance = null;
+    }
+    scheduleBody.innerHTML = "";
+    
+    statusEl.innerText = "Status: Idle";
+    summaryEl.innerText = "Waiting for voice input...";
+}
+
+
+// --- DASHBOARD NAVIGATION LOGIC ---
+
+// Schedule Button Click
+document.getElementById("scheduleBtn").onclick = () => {
+  mainDashboard.style.display = "none";
+  schedulePage.style.display = "block";
+  renderSchedule();
+};
+
+// Back Button on Schedule Page
+document.getElementById("removeBtn").onclick = () => {
+  schedulePage.style.display = "none";
+  mainDashboard.style.display = "block";
+};
+
+// Renders the schedule table and chart
+function renderSchedule() {
+  scheduleBody.innerHTML = "";
+  
+  if (tasks.length === 0) {
+      scheduleBody.innerHTML = `<tr><td colspan="3">No tasks scheduled.</td></tr>`;
+  }
+
+  // Get current state from the main to-do list
+  const mainTableRows = [...document.querySelectorAll("#todoTable tbody tr")];  
+  let completedCount = 0;
+
+  mainTableRows.forEach(row => {
+      const cells = row.cells;
+      if (!cells[1] || cells[1].innerText === "No tasks yet.") return; // Skip empty rows
+      
+      const isChecked = cells[0].querySelector('input[type="checkbox"]').checked;
+      const taskText = cells[1].innerText;
+      const timeValue = cells[2].querySelector('input[type="time"]').value;
+
+      const scheduleRow = document.createElement("tr");
+      scheduleRow.innerHTML = `
+        <td>${taskText}</td>
+        <td>${timeValue || 'Not set'}</td>
+        <td><input type="checkbox" ${isChecked ? 'checked' : ''} disabled></td>
+      `;
+      scheduleBody.appendChild(scheduleRow);
+
+      if (isChecked) {
+          completedCount++;
+      }
+  });
+  
+  let pendingCount = tasks.length - completedCount;
+  
+  // Render the chart
+  const ctx = document.getElementById("taskChart").getContext("2d");
+  
+  if (taskChartInstance) {
+      taskChartInstance.destroy(); // Destroy old chart before drawing new one
+  }
+
+  taskChartInstance = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Pending", "Completed"],
+      datasets: [{
+        data: [pendingCount, completedCount],
+        backgroundColor: ["#00ffd0", "#ff66cc"],
+        borderWidth: 0
+      }]
+    },
+    options: { 
+        plugins: { 
+            legend: { labels: { color: "#fff" } } 
+        },
+        responsive: true,
+        maintainAspectRatio: false
+    }
+  });
+}
+
+// --- CHAT BAR LOGIC (NOW FUNCTIONAL!) ---
+chatSendBtn.onclick = () => {
+  const msg = chatInput.value.trim();
+  addManualTask(msg); // Add the task to our list
+  chatInput.value = ""; // Clear the input box
+};
+
+// Also let the user press "Enter" in the chat box
+chatInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        chatSendBtn.onclick(); // Trigger the send button click
+    }
+});
+</script>
+
+</body>
+</html>

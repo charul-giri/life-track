@@ -1,0 +1,64 @@
+2025-12-07 17:26:19,562 [INFO] Starting LifeTrack Flask app with integrated task/time extraction
+2025-12-07 17:26:19,568 [INFO] ffmpeg path: F:\ffmpeg\ffmpeg-2025-11-17-git-e94439e49b-full_build\bin\ffmpeg.EXE
+2025-12-07 17:26:19,571 [INFO] torch.cuda.is_available() -> False
+2025-12-07 17:26:19,572 [INFO] [INFO] Using device: cpu
+2025-12-07 17:26:19,572 [INFO] [INFO] Loading faster-whisper model: small (this is much faster)...
+2025-12-07 17:26:22,264 [INFO] [INFO] faster-whisper model loaded.
+2025-12-07 17:26:22,266 [INFO] [INFO] Loading spaCy model 'en_core_web_sm' for task/time extraction...
+2025-12-07 17:26:24,577 [INFO] [INFO] spaCy model loaded successfully.
+2025-12-07 17:26:24,820 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://172.20.10.3:5050
+2025-12-07 17:26:24,822 [INFO] [33mPress CTRL+C to quit[0m
+2025-12-07 17:26:24,825 [INFO]  * Restarting with stat
+2025-12-07 17:26:32,737 [INFO] Starting LifeTrack Flask app with integrated task/time extraction
+2025-12-07 17:26:32,743 [INFO] ffmpeg path: F:\ffmpeg\ffmpeg-2025-11-17-git-e94439e49b-full_build\bin\ffmpeg.EXE
+2025-12-07 17:26:32,745 [INFO] torch.cuda.is_available() -> False
+2025-12-07 17:26:32,745 [INFO] [INFO] Using device: cpu
+2025-12-07 17:26:32,745 [INFO] [INFO] Loading faster-whisper model: small (this is much faster)...
+2025-12-07 17:26:35,638 [INFO] [INFO] faster-whisper model loaded.
+2025-12-07 17:26:35,638 [INFO] [INFO] Loading spaCy model 'en_core_web_sm' for task/time extraction...
+2025-12-07 17:26:36,618 [INFO] [INFO] spaCy model loaded successfully.
+2025-12-07 17:26:36,640 [WARNING]  * Debugger is active!
+2025-12-07 17:26:36,775 [INFO]  * Debugger PIN: 966-295-184
+2025-12-07 17:26:37,120 [INFO] 127.0.0.1 - - [07/Dec/2025 17:26:37] "GET / HTTP/1.1" 200 -
+2025-12-07 17:26:53,498 [INFO] Processing audio with duration 00:10.560
+2025-12-07 17:26:57,402 [INFO] Detected language 'en' with probability 0.97
+2025-12-07 17:27:02,609 [INFO] Raw transcription: I have to do three tasks at 10 a.m. I have to drink coffee at 3 a.m. I have to buy cake and at 9 a.m I have to go to gym
+2025-12-07 17:27:07,639 [INFO] Extracted tasks payload: [{"task": "have drink coffee", "time": "2025-12-11 00:00:00"}, {"task": "drink coffee at 3", "time": "2025-12-11 00:00:00"}, {"task": "have buy cake at 9", "time": "2025-12-11 00:00:00"}, {"task": "go to gym", "time": "2025-12-11 00:00:00"}, {"task": "do three tasks at 10", "time": "2025-12-14 00:00:00"}]
+2025-12-07 17:27:07,642 [INFO] 127.0.0.1 - - [07/Dec/2025 17:27:07] "POST /upload_audio HTTP/1.1" 200 -
+2025-12-07 17:29:32,956 [INFO] Processing audio with duration 00:38.280
+2025-12-07 17:29:36,782 [INFO] Detected language 'en' with probability 0.93
+2025-12-07 17:29:51,474 [INFO] Raw transcription: Hi, I am Mike. There is my daily routine. I have to wake up at 6.30 every day. After waking up I wash my face and take a shower to feel fresh. Then I have my breakfast, usually eat bread, eggs and drinks, a glass of milk. I gave energy. It gave me energy for whole the day. By 7.30 am I start taking ready for school. I put my uniform, pack my school bag and check if already I have needed for day. My school started at 8 am so I have to make leave the house on time.
+2025-12-07 17:29:53,112 [INFO] Extracted tasks payload: [{"task": "have make", "time": "2025-12-11 00:00:00"}, {"task": "make leave house", "time": "2025-12-11 00:00:00"}, {"task": "leave house on time", "time": "2025-12-11 00:00:00"}, {"task": "wash face take shower", "time": "2026-05-07 00:00:00"}, {"task": "then have gave energy", "time": "2026-05-07 00:00:00"}, {"task": "usually eat bread eggs drinks glass", "time": "2026-05-07 00:00:00"}, {"task": "have wake", "time": "2026-06-30 00:00:00"}, {"task": "wake at 30 after", "time": "2026-06-30 00:00:00"}, {"task": "start at am so", "time": "2026-08-07 00:00:00"}, {"task": "start taking", "time": ""}, {"task": "put uniform", "time": ""}, {"task": "pack school bag", "time": ""}, {"task": "already have", "time": ""}, {"task": "need ed for day school", "time": ""}]
+2025-12-07 17:29:53,120 [INFO] 127.0.0.1 - - [07/Dec/2025 17:29:53] "POST /upload_audio HTTP/1.1" 200 -
+2025-12-07 17:49:25,632 [INFO]  * Detected change in 'D:\\Programs\\Projects\\LifeTrack\\voice_transcriber\\app.py', reloading
+2025-12-07 17:49:26,579 [INFO]  * Restarting with stat
+2025-12-07 18:06:41,294 [INFO] Loading faster-whisper model 'large-v2' on device 'cpu'
+2025-12-07 18:06:58,557 [INFO] Model loaded successfully.
+2025-12-07 18:06:58,811 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.3:5000
+2025-12-07 18:06:58,811 [INFO] [33mPress CTRL+C to quit[0m
+2025-12-07 18:06:58,811 [INFO]  * Restarting with stat
+2025-12-07 18:07:12,047 [INFO] Loading faster-whisper model 'large-v2' on device 'cpu'
+2025-12-07 18:07:27,463 [INFO] Model loaded successfully.
+2025-12-07 18:07:27,548 [WARNING]  * Debugger is active!
+2025-12-07 18:07:27,563 [INFO]  * Debugger PIN: 966-295-184
+2025-12-07 18:07:47,641 [INFO] 127.0.0.1 - - [07/Dec/2025 18:07:47] "GET / HTTP/1.1" 200 -
+2025-12-07 18:07:47,937 [INFO] 127.0.0.1 - - [07/Dec/2025 18:07:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-12-07 18:08:14,400 [INFO] Processing audio with duration 00:14.820
+2025-12-07 18:08:34,400 [INFO] Detected language 'en' with probability 0.83
+2025-12-07 18:08:55,627 [INFO] Transcription: Tomorrow morning I have to go to gym first at 10 am and after that I am going to buy cake for my friend's birthday and that evening I have to visit temple.
+2025-12-07 18:08:55,648 [INFO] Extraction result: [{'task': "Tomorrow morning I have to go to gym first at 10 am and after that I am going to buy cake for my friend's birthday and that evening I have to visit temple", 'time': '10 am'}]
+2025-12-07 18:08:55,650 [INFO] 127.0.0.1 - - [07/Dec/2025 18:08:55] "POST /upload_audio HTTP/1.1" 200 -
+2025-12-07 18:19:55,651 [INFO]  * Detected change in 'D:\\Programs\\Projects\\LifeTrack\\voice_transcriber\\flush_version.py', reloading
+2025-12-07 18:19:57,818 [INFO]  * Restarting with stat
+2025-12-07 18:20:13,925 [INFO] Loading faster-whisper model 'large-v2' on device 'cpu'
+2025-12-07 18:20:31,696 [INFO] Model loaded successfully.
+2025-12-07 18:20:31,784 [WARNING]  * Debugger is active!
+2025-12-07 18:20:31,790 [INFO]  * Debugger PIN: 966-295-184
+2025-12-07 18:21:04,975 [INFO]  * Detected change in 'D:\\Programs\\Projects\\LifeTrack\\voice_transcriber\\app.py', reloading
+2025-12-07 18:21:06,917 [INFO]  * Restarting with stat
